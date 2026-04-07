@@ -3,13 +3,14 @@ import { IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
-import { SignInButton, SignUpButton ,Show , UserButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-
+import { Providers } from '@/components/provider';
+import { ConvexClientProvider } from '@/components/convex-client-provider';
 const plexMono = IBM_Plex_Mono({
   variable: "--font-plex-mono",
-    subsets: ["latin"],
-    weight: ["400", "500" ,"600" ,"700"],
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const inter = Inter({
@@ -28,37 +29,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider
-      appearance={{
-        theme: dark,
-      }}
-    >
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${plexMono.variable} ${inter.variable} antialiased`}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableColorScheme
-            disableTransitionOnChange
-          >
-            <header>
-              <Show when="signed-out">
-                          <SignInButton />
-                          <SignUpButton>
-                            <button className="bg-purple-700 text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
-                              Sign Up
-                            </button>
-                          </SignUpButton>
-                        </Show>
-                        <Show when="signed-in">
-                          <UserButton />
-                        </Show>
-            </header>
 
-            {children}
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${plexMono.variable} ${inter.variable} antialiased`}>
+
+        <Providers>
+          {children}
+        </Providers>
+
+
+
+      </body>
+    </html>
+
   );
 }
