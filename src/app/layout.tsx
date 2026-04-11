@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { ClerkProvider } from "@clerk/nextjs";
-import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
+
 import { Providers } from '@/components/provider';
-import { ConvexClientProvider } from '@/components/convex-client-provider';
+
 const plexMono = IBM_Plex_Mono({
   variable: "--font-plex-mono",
   subsets: ["latin"],

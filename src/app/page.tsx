@@ -3,28 +3,17 @@ import { Button } from "@/components/ui/button";
 
 import { useMutation, useQuery } from "convex/react"
 import { api } from '../../convex/_generated/api';
+import { ProjectView } from '@/features/projects/components/Project-view';
 
-const X = () => {
+const Home = () => {
   const projects = useQuery(api.projects.get)
   const createProject = useMutation(api.projects.create)
   return (
-    <div className='flex flex-col gap '>
-      <Button  onClick={() => createProject({
-        name: "New Proj123"
-      })}>Add New</Button>
-      {
-        projects?.map((proj) => (
+    <div>
 
-          <div className="border rounded p-2 " key={proj._id}>
-
-            <p>t{proj.name}</p>
-            <p>OwnerID  :{`${proj.ownerId}`} </p>
-          </div>
-
-        ))
-      }
+      <ProjectView></ProjectView>
     </div>
   );
 };
 
-export default X;
+export default Home;
