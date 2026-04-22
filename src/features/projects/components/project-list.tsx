@@ -7,11 +7,11 @@ import {
   GlobeIcon,
   Loader2Icon,
 } from 'lucide-react';
-import { format } from 'path';
-import { formatDistance, formatDistanceToNow } from 'date-fns';
+
 import { FaGithub } from 'react-icons/fa';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { formatDistanceToNow } from 'date-fns';
 
 const getProjectIcon = (projects: Doc<'projects'>) => {
   if (projects.importStatus === 'completed') {

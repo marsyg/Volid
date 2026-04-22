@@ -11,8 +11,9 @@ const ProjectIdPage = async ({
   return (
       <div>
           <ProjectIdView projectId={projectId}>
-              
+             
           </ProjectIdView>
+          
     </div>
   );
 };
