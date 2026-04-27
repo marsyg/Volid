@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Id } from "../../../convex/_generated/dataModel";
+import { Id } from "../../../../convex/_generated/dataModel";
 interface EditorStore {
     tabs: Map<Id<"projects">, TabState>
     getTabState: (project: Id<"projects">) => TabState;
@@ -19,7 +19,7 @@ const defaultTabState: TabState = {
     previewTabId: null,
     openTabs: [],
 };
-export const useEditorStore = create<EditorStore>((set , get) => ({
+export const useEditorStore  = create<EditorStore>((set , get) => ({
   
     tabs: new Map(),
     getTabState: (project: Id<"projects">) => {
@@ -31,22 +31,28 @@ export const useEditorStore = create<EditorStore>((set , get) => ({
         const tabState = tabs.get(projectId) ?? defaultTabState;
         const { openTabs, previewTabId } = tabState;
         const isAlreadyOpen = openTabs.includes(fileId);
+        console.log(isAlreadyOpen)
         if (!isAlreadyOpen && !pinned) {
-            const newOpenTabs = previewTabId ? openTabs.map((id) => (id == previewTabId ? fileId : id)): [...openTabs , fileId];
+            console.log(1)
+            const newOpenTabs = previewTabId ? openTabs.map((id) => (id == previewTabId ? fileId : id)) : [...openTabs, fileId];
+            console.log(newOpenTabs)
             tabs.set(projectId, {
                  openTabs: newOpenTabs,
                  activeTabId: fileId,
                  previewTabId: fileId,
                });
-               set({ tabs });
+            set({ tabs });
+            return 
         } 
         if (!isAlreadyOpen && pinned) {
+          console.log(2)
             tabs.set(projectId, {
                 ...tabState,
                 openTabs: [...tabState.openTabs, fileId],
                 activeTabId: fileId,
             });
             set({ tabs });
+            return 
         }
         const pinTab = pinned && previewTabId == fileId;
         tabs.set(projectId, {

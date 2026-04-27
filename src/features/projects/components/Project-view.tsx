@@ -34,12 +34,7 @@ export const ProjectView = () => {
       <div className="min-h-screen bg-sidebar flex flex-col items-center justify-center p-6 md:p-16">
         <div className="w-full  max-w-sum mx-auto flex flex-auto gap-4 items-center">
           <div className=" flex flex-center gap-2 w-full group/logo">
-            <Image
-              src="/vercel.svg"
-              alt="volid"
-              width={32}
-              height={32}
-            />
+            <Image src="/vercel.svg" alt="volid" width={32} height={32} />
             <h1
               className={cn(
                 'text-4xl md:text-5xl font-semibold',

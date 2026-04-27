@@ -112,7 +112,6 @@ const Navbar = ({ projectId }: { projectId: Id<'projects'> }) => {
           <Tooltip>
             <TooltipTrigger asChild>
               <LoaderIcon className="size-4  text-muted-foreground animate-accordion-down" />
-              
             </TooltipTrigger>
             <TooltipContent>Importing...</TooltipContent>
           </Tooltip>
@@ -121,12 +120,11 @@ const Navbar = ({ projectId }: { projectId: Id<'projects'> }) => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <CloudIcon className="size-4  text-muted-foreground " />
-                
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                Saved{' '}
-                                {formatDistanceToNow(project.updatedAt, { addSuffix: false })}
-                              </TooltipContent>
+              </TooltipTrigger>
+              <TooltipContent>
+                Saved{' '}
+                {formatDistanceToNow(project.updatedAt, { addSuffix: false })}
+              </TooltipContent>
             </Tooltip>
           )
         )}

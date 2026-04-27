@@ -56,8 +56,7 @@ export const FileExplorer = ({ projectId }: { projectId: Id<'projects'> }) => {
           onClick={() => setIsOpen(!isOpen)}
           className="group/project curosor-pointer w-full bg-accent text-left flex items-center gap-0.5"
         >
-                  <ChevronRightIcon
-                      
+          <ChevronRightIcon
             className={cn(
               'size-4 shrink- text-muted-foreground group-hover:translate-x-1',
               isOpen ? 'rotate-90' : 'rotate-0',
@@ -65,7 +64,7 @@ export const FileExplorer = ({ projectId }: { projectId: Id<'projects'> }) => {
           />
           <span className="text-xs uppercase line-clamp-1">
             {project?.name}
-                  </span>                  
+          </span>
           <div className="group/hover  project:opacity-100 transition-none duration-0  flex items-center gap-0.5 ml-auto ">
             <Button
               onClick={(e) => {
@@ -114,7 +113,14 @@ export const FileExplorer = ({ projectId }: { projectId: Id<'projects'> }) => {
         {isOpen && (
           <>
             {rootFiles === undefined && <LoadingRow level={0} />}
-           {creating && <CreateInput type={creating} level={0} onSubmit={handleCreate} onCancel={() => setCreating(null)} />}
+            {creating && (
+              <CreateInput
+                type={creating}
+                level={0}
+                onSubmit={handleCreate}
+                onCancel={() => setCreating(null)}
+              />
+            )}
 
             {rootFiles?.map((file) => (
               <Tree

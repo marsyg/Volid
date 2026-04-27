@@ -17,6 +17,8 @@ import { LoadingRow } from './loading-row';
 import { CreateInput } from './create-input';
 import { RenameInput } from './rename-input';
 
+import { useEditorStore } from '@/features/editor/store/useEditorStore';
+
 export const Tree = ({
   file,
   level,
@@ -36,6 +38,10 @@ export const Tree = ({
   const deleteFile = useDeleteFile();
   const renameFile = useRenameFile();
 
+  const openFile = useEditorStore((state) => state.openFile);
+  const handleClick = (projectId: Id<'projects'>, fileId: Id<'files'>, pinned: boolean) => {
+    openFile(projectId, fileId, { pinned });
+  };
   const handleCreate = (name: string) => {
     setCreating(null);
 
@@ -188,7 +194,7 @@ export const Tree = ({
         item={file}
         level={level}
         isActive={isOpen}
-        onClick={() => {}}
+        onClick={() => handleClick(projectId, file._id, false)}
         onCreateFile={() => {}}
         onDelete={() => {
           setDeleting(true);
