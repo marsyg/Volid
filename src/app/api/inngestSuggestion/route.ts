@@ -1,9 +1,9 @@
 import { serve } from 'inngest/next';
 import { inngest } from '@/inngest/client';
-import { processTask } from '@/inngest/functions/functions';
+
 import { provideInlineCompletion } from '@/inngest/functions/provideInlineCompleletion';
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
-  functions: [processTask, provideInlineCompletion],
+  functions: [provideInlineCompletion],
 });

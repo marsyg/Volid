@@ -1,8 +1,10 @@
-import { useEffect, useRef, useCallback } from 'react';
-import Editor, { DiffEditor, useMonaco, loader } from '@monaco-editor/react';
-import { editor, type editor as editorType } from 'monaco-editor';
+import Editor, { DiffEditor, loader, useMonaco } from '@monaco-editor/react';
 import type { IDisposable } from 'monaco-editor';
-
+import * as monaco from 'monaco-editor';
+import { editor, type editor as editorType } from 'monaco-editor';
+import { useCallback, useEffect, useRef } from 'react';
+import { createMyInlineCompletionsProvider } from '../utils/customInlineCompleletionProvider';
+type Monaco = typeof monaco 
 interface Props {
   fileName: string;
   intailValue?: string;
@@ -10,7 +12,9 @@ interface Props {
 }
 export const CodeEditor = ({ fileName, intailValue, onChange }: Props) => {
   const monaco = useMonaco();
+
   const editorRef = useRef<editorType.IStandaloneCodeEditor | null>(null);
+
   const changeSubscriptionRef = useRef<IDisposable | null>(null);
 
   const getLanguageId = (fileName: string): string => {
@@ -71,16 +75,24 @@ export const CodeEditor = ({ fileName, intailValue, onChange }: Props) => {
     monaco.editor.setTheme('custom-dark');
   }, [monaco]);
 
-  const handleEditorOnMount = (editor: editorType.IStandaloneCodeEditor) => {
+  const handleEditorOnMount = (editor: editorType.IStandaloneCodeEditor, monaco: Monaco) => {
     editorRef.current = editor;
-
+    const model = editor.getModel();
+    if (!model) return;
+   
     if (changeSubscriptionRef.current) {
       changeSubscriptionRef.current.dispose();
     }
-    changeSubscriptionRef.current = editor.onDidChangeModelContent(() => {
-      const value = editor.getValue();
-      onChange(value);
-    });
+
+    const languageId = model.getLanguageId();
+    changeSubscriptionRef.current =
+      monaco.languages.registerInlineCompletionsProvider(
+        languageId,
+        createMyInlineCompletionsProvider(),
+      );
+
+      
+    
     editor.updateOptions({
       minimap: { enabled: true },
       wordWrap: 'on',
@@ -120,6 +132,9 @@ export const CodeEditor = ({ fileName, intailValue, onChange }: Props) => {
           useShadows: true,
           verticalSliderSize: 12,
           horizontalSliderSize: 12,
+        },
+        inlineSuggest: {
+          enabled: true,
         },
       }}
     />
