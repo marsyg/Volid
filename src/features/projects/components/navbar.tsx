@@ -84,7 +84,7 @@ const Navbar = ({ projectId }: { projectId: Id<'projects'> }) => {
             {isRenaming ? (
               <BreadcrumbItem>
                 <input
-                  autoFocus
+                  
                   onFocus={() => {}}
                   onKeyDown={(e) => {
                     handleKeyDown(e);

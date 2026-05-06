@@ -12,7 +12,8 @@ const Tab = ({
 }) => {
   return (
     <div className="">
-      <button
+          <button
+            type='button'
         onClick={onClick}
         className={cn(
           'flex px-2 items-center cursor-pointer  text-muted-foreground border-r hover:bg-accent/30',

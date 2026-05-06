@@ -1,10 +1,12 @@
-import Editor, { DiffEditor, loader, useMonaco } from '@monaco-editor/react';
-import type { IDisposable } from 'monaco-editor';
+
+
 import * as monaco from 'monaco-editor';
-import { editor, type editor as editorType } from 'monaco-editor';
-import { useCallback, useEffect, useRef } from 'react';
+import type { IDisposable } from 'monaco-editor';
+import { type editor as editorType } from 'monaco-editor';
+import { useEffect, useRef } from 'react';
+import Editor, { useMonaco } from '@monaco-editor/react';
 import { createMyInlineCompletionsProvider } from '../utils/customInlineCompleletionProvider';
-type Monaco = typeof monaco 
+type Monaco = typeof monaco;
 interface Props {
   fileName: string;
   intailValue?: string;
@@ -75,24 +77,25 @@ export const CodeEditor = ({ fileName, intailValue, onChange }: Props) => {
     monaco.editor.setTheme('custom-dark');
   }, [monaco]);
 
-  const handleEditorOnMount = (editor: editorType.IStandaloneCodeEditor, monaco: Monaco) => {
+  const handleEditorOnMount = (
+    editor: editorType.IStandaloneCodeEditor,
+    monaco: Monaco,
+  ) => {
     editorRef.current = editor;
     const model = editor.getModel();
     if (!model) return;
-   
+
     if (changeSubscriptionRef.current) {
       changeSubscriptionRef.current.dispose();
     }
 
     const languageId = model.getLanguageId();
-    changeSubscriptionRef.current =
-      monaco.languages.registerInlineCompletionsProvider(
-        languageId,
-        createMyInlineCompletionsProvider(),
-      );
+    // changeSubscriptionRef.current =
+    //   monaco.languages.registerInlineCompletionsProvider(
+    //     languageId,
+    //     createMyInlineCompletionsProvider(),
+    //   );
 
-      
-    
     editor.updateOptions({
       minimap: { enabled: true },
       wordWrap: 'on',
@@ -122,6 +125,7 @@ export const CodeEditor = ({ fileName, intailValue, onChange }: Props) => {
       theme="custom-dark"
       language={languageId}
       value={intailValue ?? ''}
+      onChange={(value) => onChange(value ?? '')}
       onMount={handleEditorOnMount}
       options={{
         automaticLayout: true,

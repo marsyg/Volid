@@ -1,5 +1,4 @@
-import { PinIcon, XIcon } from 'lucide-react';
-import { ta } from 'zod/v4/locales';
+import { Maximize2, Minimize2, PinIcon, XIcon } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -67,9 +66,6 @@ export const TabBar = ({
   projectId: Id<'projects'>;
 }) => {
   const { tabs } = useEditorStore();
-  for (const [key, value] of tabs.entries()) {
-    console.log(key, value);
-  }
 
   const tabBars = tabs.get(projectId)?.openTabs;
   const activeTabId = tabs.get(projectId)?.activeTabId;
@@ -80,8 +76,6 @@ export const TabBar = ({
     path = buildPath(activeTabId, fileMap);
   }
 
-  console.log(tabBars, 'this is id open files');
-  console.log(activeTabId, 'this is active tab id');
   return (
     <div className="flex  flex-col">
       <div className="flex flex-row  ">
@@ -90,12 +84,15 @@ export const TabBar = ({
             key={index}
             onClick={() => {}}
             onDoubleClick={() => {}}
-            activeId={activeTabId}
+            activeId={activeTabId ?? null}
             pinned={false}
             tabId={tab}
             projectId={projectId}
           />
         ))}
+        <div className="ml-auto flex items-center gap-1 rounded-sm p-1 m-1.5 hover:bg-gray-500">
+          <Maximize2 className="ml-auto  size-3.5" />
+        </div>
       </div>
 
       {path && (

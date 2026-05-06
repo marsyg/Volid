@@ -10,19 +10,6 @@ import { CodeEditor } from './code-editor';
 
 const DEBOUNCE_MS = 1500;
 
-const noActiveTabView = () => {
-  return (
-    <div className="size-full flex items-center justify-center">
-      <Image
-        src="/logo-alt.svg"
-        alt="Polaris"
-        width={50}
-        height={50}
-        className="opacity-25"
-      />
-    </div>
-  );
-};
 export const EditorView = ({ projectId }: { projectId: Id<'projects'> }) => {
   const { tabs } = useEditorStore();
   const activeTabId = tabs.get(projectId)?.activeTabId;
@@ -52,7 +39,7 @@ export const EditorView = ({ projectId }: { projectId: Id<'projects'> }) => {
           <div className="size-full flex items-center justify-center">
             <Image
               src="/logo-alt.svg"
-              alt="Polaris"
+              alt="Volid"
               width={50}
               height={50}
               className="opacity-25"
@@ -75,7 +62,7 @@ export const EditorView = ({ projectId }: { projectId: Id<'projects'> }) => {
             }}
           />
         )}
-        {isActiveFileText && (
+        {isActiveFileBinary && (
           <div className="size-full flex items-center justify-center">
             <div className="flex flex-col items-center gap-2.5 max-w-md text-center">
               <AlertTriangleIcon className="size-10 text-yellow-500" />

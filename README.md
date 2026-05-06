@@ -31,6 +31,21 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This project is configured for Vercel in `vercel.json`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Required Vercel environment variables:
+
+- `CONVEX_DEPLOY_KEY`: production deploy key from the Convex dashboard.
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Clerk publishable key.
+- `CLERK_SECRET_KEY`: Clerk secret key.
+- `CLERK_JWT_ISSUER_DOMAIN`: Clerk issuer domain used by `convex/auth.config.ts`.
+- `OPENROUTER_API_KEY`: API key for inline completion requests.
+- `NEXT_PUBLIC_APP_URL`: optional canonical app URL. If omitted, Vercel runtime URL variables are used.
+
+The Vercel build command runs:
+
+```bash
+npx convex deploy --cmd-url-env-var-name NEXT_PUBLIC_CONVEX_URL --cmd 'npm run build'
+```
+
+That deploys Convex functions and injects the production `NEXT_PUBLIC_CONVEX_URL` into the Next.js build.

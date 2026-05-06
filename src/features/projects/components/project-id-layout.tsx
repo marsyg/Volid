@@ -2,9 +2,8 @@
 import { Id } from '../../../../convex/_generated/dataModel';
 import Navbar from './navbar';
 import { Allotment } from 'allotment';
+import { ConversationSidebar } from './conversation-sidebar';
 
-const MIN_HEIGHT = 100;
-const DEFAULT_HEIGHT = 1000;
 const MAX_SIDEBAR_WIDTH = 800;
 const MIN_SIDEBAR_WIDTH = 200;
 const DEFAULT_SIDEBAR_WIDTH = 300;
@@ -22,17 +21,17 @@ const ProjectIdLayout = ({
     <div className="flex-1">
       <Allotment
         className="flex-1 overflow-hidden"
-        defaultSizes={[DEFAULT_SIDEBAR_WIDTH, DEFAULT_HEIGHT]}
+        defaultSizes={[DEFAULT_SIDEBAR_WIDTH, DEFAULT_MAIN_SIZE]}
       >
-        <Allotment.Pane minSize={MIN_SIDEBAR_WIDTH} maxSize={MAX_SIDEBAR_WIDTH}>
-          Conversation Sidebar
-        </Allotment.Pane>
         <Allotment.Pane
           snap
           minSize={MIN_SIDEBAR_WIDTH}
           maxSize={MAX_SIDEBAR_WIDTH}
           preferredSize={DEFAULT_SIDEBAR_WIDTH}
         >
+          <ConversationSidebar />
+        </Allotment.Pane>
+        <Allotment.Pane snap minSize={MIN_SIDEBAR_WIDTH}>
           {children}
         </Allotment.Pane>
       </Allotment>

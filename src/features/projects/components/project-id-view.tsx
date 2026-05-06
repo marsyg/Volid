@@ -8,12 +8,12 @@ import {
   DEFAULT_MAIN_SIZE,
   DEFAULT_SIDEBAR_WIDTH,
   MAX_SIDEBAR_WIDTH,
+  MIN_FILE_EXPLORER_WIDTH,
   MIN_SIDEBAR_WIDTH,
 } from '@/consant';
 
 import 'allotment/dist/style.css';
 import { FileExplorer } from '@/features/projects/components/fileExplorer';
-import { CodeEditor } from '@/features/editor/components/code-editor';
 import { EditorView } from '@/features/editor/components/editor-view';
 export const ProjectIdView = ({ projectId }: { projectId: Id<'projects'> }) => {
   const [activeTab, setActiveTab] = useState<'code' | 'preview'>('code');
@@ -25,7 +25,7 @@ export const ProjectIdView = ({ projectId }: { projectId: Id<'projects'> }) => {
           <Allotment defaultSizes={[DEFAULT_SIDEBAR_WIDTH, DEFAULT_MAIN_SIZE]}>
             <Allotment.Pane
               snap
-              minSize={MIN_SIDEBAR_WIDTH}
+              minSize={MIN_FILE_EXPLORER_WIDTH}
               maxSize={MAX_SIDEBAR_WIDTH}
               preferredSize={DEFAULT_SIDEBAR_WIDTH}
             >
@@ -33,10 +33,13 @@ export const ProjectIdView = ({ projectId }: { projectId: Id<'projects'> }) => {
             </Allotment.Pane>
             <Allotment.Pane
               minSize={MIN_SIDEBAR_WIDTH}
-              maxSize={MAX_SIDEBAR_WIDTH}
-              preferredSize={DEFAULT_SIDEBAR_WIDTH}
+              preferredSize={DEFAULT_MAIN_SIZE}
             >
-              <TabBar activeTab={activeTab} setActiveTab={setActiveTab} projectId={projectId} />
+              <TabBar
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                projectId={projectId}
+              />
               <EditorView projectId={projectId} />
             </Allotment.Pane>
           </Allotment>

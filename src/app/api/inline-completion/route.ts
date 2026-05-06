@@ -1,5 +1,4 @@
-import { xai } from '@ai-sdk/xai';
-import { generateText } from 'ai';
+
 import { NextResponse } from 'next/server';
 import { openrouter } from '@/lib/openRouter';
 
@@ -33,7 +32,6 @@ function getErrorMessage(error: unknown) {
 }
 
 export async function POST(req: Request) {
-  console.log('process.env.XAI_API_KEY', process.env.XAI_API_KEY);
   try {
     if (!process.env.OPENROUTER_API_KEY) {
       return NextResponse.json(
@@ -44,12 +42,7 @@ export async function POST(req: Request) {
         { status: 500 },
       );
     }
-    console.log(
-      process.env.OPENROUTER_API_KEY,
-      'process.env.OPENROUTER_API_KEY',
-    );
     const { code, languageId } = await req.json();
-    console.log(code, languageId);
     if (!code || !languageId) {
       return NextResponse.json(
         {
