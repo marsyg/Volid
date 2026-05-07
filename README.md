@@ -1,46 +1,95 @@
-Volid
-A browser-based code editor and project workspace — create projects, manage files in a nested folder tree, and get AI-powered inline code completions, all in the browser.
+# Volid
 
-![Dark theme Monaco editor with file explorer sidebar]
+A browser-based code editor and project workspace — create projects, manage files in a nested folder tree, and get AI-powered inline code completions directly in the browser.
 
-Features
-📁 Project & file management — create projects, organize files and folders in a nested tree, rename, delete, and navigate with a VSCode-style sidebar
-✏️ Monaco-powered editor — the same engine that powers VS Code, with syntax highlighting for 20+ languages, bracket colorization, auto-closing pairs, and a custom dark theme
-🤖 AI inline completions — context-aware completions at the cursor powered by OpenRouter (GPT) and Google Gemini, delivered via Inngest background functions
-🔐 Authentication — sign-in / sign-up via Clerk; all data is scoped to the authenticated user
-🌙 Dark / light mode — persistent theme preference with next-themes
-⚡ Real-time persistence — file content auto-saves with debounce to Convex, a real-time database
-Tech Stack
-Layer	Technology
-Framework	Next.js 16 (App Router), React 19
-Language	TypeScript 5 (strict)
-Styling	Tailwind CSS v4, shadcn/ui, Radix UI
-Editor	Monaco Editor (@monaco-editor/react)
-State	Zustand (tab/editor state)
-Database / Backend	Convex (real-time BaaS, queries & mutations)
-Auth	Clerk + Convex JWT bridge
-AI / LLM	Vercel AI SDK, Google Gemini 2.5 Flash, OpenRouter
-Background jobs	Inngest
-Web scraping	Firecrawl (project import)
-Linting / Formatting	ESLint 9 (Next.js config), Prettier
-Getting Started
-Prerequisites
-Node.js ≥ 18
-pnpm (or npm / yarn)
-A Convex account
-A Clerk account
-An OpenRouter API key
-A Google AI API key (Gemini)
-An Inngest account (for background AI functions)
-1. Clone & install
-bash
+![Dark theme Monaco editor with file explorer sidebar](./public/preview.png)
+
+---
+
+# Features
+
+- 📁 **Project & File Management**  
+  Create projects, organize files and folders in a nested tree, rename, delete, and navigate with a VSCode-style sidebar.
+
+- ✏️ **Monaco-powered Editor**  
+  Powered by Monaco Editor — the same engine used in VS Code — with syntax highlighting, bracket colorization, auto-closing pairs, and a custom dark theme.
+
+- 🤖 **AI Inline Completions**  
+  Context-aware code completions powered by OpenRouter, Gemini, and the Vercel AI SDK.
+
+- 🔐 **Authentication**  
+  Sign in and sign up using Clerk. All projects and files are scoped to the authenticated user.
+
+- 🌙 **Dark / Light Mode**  
+  Persistent theme switching using `next-themes`.
+
+- ⚡ **Real-time Persistence**  
+  File content auto-saves with debounce using Convex real-time mutations.
+
+- 🧠 **Background AI Jobs**  
+  Inngest-powered background workflows for AI completions and async tasks.
+
+- 🌐 **Project Importing**  
+  Import projects and scrape content using Firecrawl.
+
+---
+
+# Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router), React 19 |
+| Language | TypeScript 5 (strict) |
+| Styling | Tailwind CSS v4, shadcn/ui, Radix UI |
+| Editor | Monaco Editor (`@monaco-editor/react`) |
+| State Management | Zustand |
+| Backend / Database | Convex |
+| Authentication | Clerk + Convex JWT bridge |
+| AI / LLM | Vercel AI SDK, Google Gemini, OpenRouter |
+| Background Jobs | Inngest |
+| Web Scraping | Firecrawl |
+| Linting / Formatting | ESLint 9, Prettier |
+
+---
+
+# Getting Started
+
+## Prerequisites
+
+Make sure you have the following installed:
+
+- Node.js >= 18
+- pnpm (recommended)
+- Convex account
+- Clerk account
+- OpenRouter API key
+- Google AI API key
+- Inngest account
+
+---
+
+## 1. Clone the Repository
+
+```bash
 git clone https://github.com/marsyg/Volid.git
 cd Volid
-pnpm install
-2. Set up environment variables
-Create a .env.local file at the project root:
+```
 
-env
+---
+
+## 2. Install Dependencies
+
+```bash
+pnpm install
+```
+
+---
+
+## 3. Configure Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
 # Convex
 NEXT_PUBLIC_CONVEX_URL=<your-convex-deployment-url>
 
@@ -49,46 +98,92 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=<your-clerk-publishable-key>
 CLERK_SECRET_KEY=<your-clerk-secret-key>
 CLERK_JWT_ISSUER_DOMAIN=<your-clerk-jwt-issuer-domain>
 
-# AI
+# AI Providers
 OPENROUTER_API_KEY=<your-openrouter-api-key>
 GOOGLE_GENERATIVE_AI_API_KEY=<your-google-ai-api-key>
-XAI_API_KEY=<your-xai-api-key>   # optional
-3. Deploy Convex schema
-bash
+XAI_API_KEY=<your-xai-api-key> # optional
+
+# Inngest
+INNGEST_EVENT_KEY=<your-inngest-event-key>
+INNGEST_SIGNING_KEY=<your-inngest-signing-key>
+```
+
+---
+
+## 4. Deploy Convex Schema
+
+```bash
 npx convex dev
-4. Run the development server
-bash
+```
+
+---
+
+## 5. Start the Development Server
+
+```bash
 pnpm dev
-Open http://localhost:3000.
+```
 
-Note: INNGEST_DEV=1 is set automatically in the dev script so Inngest runs locally without a cloud connection.
+Visit:
 
-Project Structure
-Code
+```txt
+http://localhost:3000
+```
+
+> `INNGEST_DEV=1` is automatically enabled in development mode so Inngest runs locally without requiring a cloud connection.
+
+---
+
+# Project Structure
+
+```txt
 /
-├── convex/              # Backend: Convex schema, queries, mutations (projects, files, auth)
+├── convex/                     # Convex backend schema, queries, mutations
 ├── src/
-│   ├── app/             # Next.js App Router pages + API routes
+│   ├── app/                    # Next.js App Router
 │   │   ├── api/
-│   │   │   ├── inline-completion/   # REST endpoint for Monaco inline completions
+│   │   │   ├── inline-completion/   # AI completion endpoint
 │   │   │   └── inngest/             # Inngest webhook handler
-│   │   └── projects/[projectId]/    # Per-project editor page
-│   ├── components/      # Global UI components (shadcn/ui primitives, providers)
+│   │   └── projects/[projectId]/    # Project editor page
+│   │
+│   ├── components/             # Shared UI components
+│   │
 │   ├── features/
-│   │   ├── auth/        # Unauthenticated landing view
-│   │   ├── editor/      # Monaco editor, tab bar, Zustand store
-│   │   └── projects/    # Project list, file explorer tree, project layout
-│   ├── inngest/         # Inngest client + background AI functions
-│   └── lib/             # OpenRouter client, shared utilities
-└── public/              # Static assets
-Scripts
-Command	Description
-pnpm dev	Start Next.js + Inngest dev server
-pnpm build	Production build
-pnpm start	Start production server
-pnpm lint	Run ESLint
-Contributing
-Pull requests are welcome. Please run pnpm lint before submitting.
+│   │   ├── auth/               # Authentication pages/views
+│   │   ├── editor/             # Monaco editor + Zustand store
+│   │   └── projects/           # Project explorer and layout
+│   │
+│   ├── inngest/                # Inngest client + background functions
+│   └── lib/                    # Shared utilities and AI clients
+│
+└── public/                     # Static assets
+```
 
-License
-MIT
+---
+
+# Scripts
+
+| Command | Description |
+|---|---|
+| `pnpm dev` | Start Next.js + Inngest development server |
+| `pnpm build` | Create production build |
+| `pnpm start` | Start production server |
+| `pnpm lint` | Run ESLint |
+
+---
+
+# Contributing
+
+Pull requests are welcome.
+
+Before submitting changes, run:
+
+```bash
+pnpm lint
+```
+
+---
+
+# License
+
+Licensed under the MIT License.
