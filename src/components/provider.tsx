@@ -1,50 +1,36 @@
 'use client';
 
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { UnautheticatedView } from '@/features/auth/components/unauthenticated-view';
+import { ClerkProvider, useAuth } from '@clerk/nextjs';
+import { Authenticated, AuthLoading, ConvexReactClient, Unauthenticated } from 'convex/react';
 import { ConvexProviderWithClerk } from 'convex/react-clerk';
-import {
-  ConvexReactClient,
-  Authenticated,
-  Unauthenticated,
-  AuthLoading,
-} from 'convex/react';
 import { ThemeProvider } from 'next-themes';
 import { ReactNode } from 'react';
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  useAuth,
-  
-} from '@clerk/nextjs';
-import { UnautheticatedView } from '@/features/auth/components/unauthenticated-view';
-import { TooltipProvider } from '@/components/ui/tooltip';
+
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export const Providers = ({ children }: { children: ReactNode }) => {
-    return (      
+  return (
     <ClerkProvider>
- <TooltipProvider>
-            <ConvexProviderWithClerk useAuth={useAuth} client={convex}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AuthLoading>AuthLoading ...</AuthLoading>
+      <TooltipProvider>
+        <ConvexProviderWithClerk useAuth={useAuth} client={convex}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <AuthLoading>AuthLoading ...</AuthLoading>
 
-          <Unauthenticated>
-            <UnautheticatedView></UnautheticatedView>
-          </Unauthenticated>
+            <Unauthenticated>
+              <UnautheticatedView></UnautheticatedView>
+            </Unauthenticated>
 
-          <Authenticated>
-            
-              {children}
-            
-          </Authenticated>
-        </ThemeProvider>
-                </ConvexProviderWithClerk>
- </TooltipProvider>
+            <Authenticated>{children}</Authenticated>
+          </ThemeProvider>
+        </ConvexProviderWithClerk>
+      </TooltipProvider>
     </ClerkProvider>
   );
 };

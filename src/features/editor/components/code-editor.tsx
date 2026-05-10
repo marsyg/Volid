@@ -1,5 +1,4 @@
 
-
 import * as monaco from 'monaco-editor';
 import type { IDisposable } from 'monaco-editor';
 import { type editor as editorType } from 'monaco-editor';
@@ -9,7 +8,7 @@ import { createMyInlineCompletionsProvider } from '../utils/customInlineComplele
 type Monaco = typeof monaco;
 interface Props {
   fileName: string;
-  intailValue?: string;
+  intailValue?: string; 
   onChange: (value: string) => void;
 }
 export const CodeEditor = ({ fileName, intailValue, onChange }: Props) => {

@@ -29,7 +29,7 @@ const ProjectIdLayout = ({
           maxSize={MAX_SIDEBAR_WIDTH}
           preferredSize={DEFAULT_SIDEBAR_WIDTH}
         >
-          <ConversationSidebar />
+          <ConversationSidebar projectId={projectId} />
         </Allotment.Pane>
         <Allotment.Pane snap minSize={MIN_SIDEBAR_WIDTH}>
           {children}

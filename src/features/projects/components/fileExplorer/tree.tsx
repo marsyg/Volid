@@ -1,6 +1,9 @@
+import { FileIcon, FolderIcon } from '@react-symbols/icons/utils';
 import { ChevronRightIcon } from 'lucide-react';
-import { FolderIcon, FileIcon } from '@react-symbols/icons/utils';
-import { Id, Doc } from '../../../../../convex/_generated/dataModel';
+import { useState } from 'react';
+import { useEditorStore } from '@/features/editor/store/useEditorStore';
+import { cn } from '@/lib/utils';
+import { Doc, Id } from '../../../../../convex/_generated/dataModel';
 import {
   useCreateFile,
   useCreateFolder,
@@ -9,15 +12,10 @@ import {
   useRenameFile,
 } from '../../hooks/use-file';
 import { getItemPadding } from './constant';
-import { useState } from 'react';
-import { TreeItemWrapper } from './tree-item-wrapper';
-import { cn } from '@/lib/utils';
-import { LoadingRow } from './loading-row';
-
 import { CreateInput } from './create-input';
+import { LoadingRow } from './loading-row';
 import { RenameInput } from './rename-input';
-
-import { useEditorStore } from '@/features/editor/store/useEditorStore';
+import { TreeItemWrapper } from './tree-item-wrapper';
 
 export const Tree = ({
   file,
@@ -85,9 +83,7 @@ export const Tree = ({
   const folderRender = (
     <>
       <div className="flex items-center gap-0.5 ">
-        <ChevronRightIcon
-          className={cn('size-4 shrink-0 ', isOpen && 'rotate-90')}
-        />
+        <ChevronRightIcon className={cn('size-4 shrink-0 ', isOpen && 'rotate-90')} />
         <FolderIcon className="w-4 h-4" folderName={file.name} />
 
         <span className="truncate">{file.name}</span>
@@ -97,9 +93,7 @@ export const Tree = ({
 
   const folderChildren = isOpen && (
     <>
-      {folderContents === undefined && (
-        <LoadingRow level={level + 1}></LoadingRow>
-      )}
+      {folderContents === undefined && <LoadingRow level={level + 1}></LoadingRow>}
       {creating && (
         <CreateInput
           level={level + 1}
@@ -109,12 +103,7 @@ export const Tree = ({
         />
       )}
       {folderContents?.map((subItem) => (
-        <Tree
-          key={subItem._id}
-          file={subItem}
-          level={level + 1}
-          projectId={projectId}
-        />
+        <Tree key={subItem._id} file={subItem} level={level + 1} projectId={projectId} />
       ))}
     </>
   );
@@ -123,6 +112,7 @@ export const Tree = ({
       return (
         <>
           <button
+            type="button"
             onClick={() => setIsOpen((prev) => !prev)}
             className="group flex item-center gap-1 h-5.5 hover:bg-accent/30 w-full"
             style={{ paddingLeft: getItemPadding(level, isOpen) }}
@@ -138,6 +128,7 @@ export const Tree = ({
       return (
         <>
           <button
+            type="button"
             onClick={() => setIsOpen((prev) => !prev)}
             className="group flex item-center gap-1 h-5.5 hover:bg-accent/30 w-full"
             style={{ paddingLeft: getItemPadding(level, isOpen) }}

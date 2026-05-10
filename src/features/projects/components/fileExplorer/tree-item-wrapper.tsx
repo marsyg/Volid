@@ -1,14 +1,14 @@
+import { cn } from '@/lib/utils';
 import { Doc } from '../../../../../convex/_generated/dataModel';
+import { Button } from '../../../../components/ui/button';
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
-  ContextMenuTrigger,
   ContextMenuSeparator,
   ContextMenuShortcut,
+  ContextMenuTrigger,
 } from '../../../../components/ui/context-menu';
-import { Button } from '../../../../components/ui/button';
-import { cn } from '@/lib/utils';
 import { getItemPadding } from './constant';
 
 export const TreeItemWrapper = ({
@@ -38,6 +38,7 @@ export const TreeItemWrapper = ({
     <ContextMenu>
       <ContextMenuTrigger asChild>
         <button
+          type="button"
           onClick={onClick}
           onDoubleClick={onDoubleClick}
           onKeyDown={(e) => {
@@ -57,17 +58,14 @@ export const TreeItemWrapper = ({
           style={{ paddingLeft: getItemPadding(level, item.type === 'file') }}
           className={cn(
             'group flex items-center gap-1 w-full h-5.5 hover:bg-accent/30 outline-none focus:ring-innset focus:ring-ring',
-            isActive && 'bg-accent/30',
+            isActive && 'bg-accent/30'
           )}
         >
           {children}
         </button>
       </ContextMenuTrigger>
 
-      <ContextMenuContent
-        onCloseAutoFocus={(e) => e.preventDefault()}
-        className="w-64"
-      >
+      <ContextMenuContent onCloseAutoFocus={(e) => e.preventDefault()} className="w-64">
         {item.type === 'folder' && (
           <>
             <ContextMenuItem className="text-sm" onClick={onCreateFile}>
