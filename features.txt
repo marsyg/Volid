@@ -1,2 +1,0 @@
-mere ko phle ai ko batan hoga ki mere ye func (convex ke calls)
-render karan
