@@ -1,7 +1,19 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+
 import { verifyAuth } from './auth';
 import { Id } from './_generated/dataModel';
+
+import { mutation, query, type MutationCtx, type QueryCtx } from './_generated/server';
+
+const assertProjectOwner = async (
+  ctx: QueryCtx | MutationCtx,
+  projectId: Id<'projects'>,
+  userId: string,
+) => {
+  const project = await ctx.db.get(projectId);
+  if (!project) throw new Error('Project not found');
+  if (project.ownerId !== userId) throw new Error('Unauthorized');
+};
 
 export const getFiles = query({
   args: {
@@ -10,10 +22,8 @@ export const getFiles = query({
   },
   handler: async (ctx, args) => {
     const identity = await verifyAuth(ctx);
-    const project = await ctx.db.get('projects', args.projectId);
-    if (!project) throw new Error('Project not found');
     if (!identity) throw new Error('Unauthorized');
-    if (project.ownerId !== identity.subject) throw new Error('Unauthorized');
+    await assertProjectOwner(ctx, args.projectId, identity.subject);
     const files = await ctx.db
       .query('files')
       .withIndex('by_project', (q) => q.eq('projectId', args.projectId))
@@ -30,13 +40,7 @@ export const getFile = query({
   handler: async (ctx, args) => {
     const identity = await verifyAuth(ctx);
     if (!identity) throw new Error('Unauthorized');
-
-    // Verify the project exists and belongs to the authenticated user
-    const project = await ctx.db.get('projects', args.projectId);
-    if (!project) throw new Error('Project not found');
-    if (project.ownerId !== identity.subject) throw new Error('Unauthorized');
-
-    // Fetch the file and verify it belongs to the project
+    await assertProjectOwner(ctx, args.projectId, identity.subject);
     const file = await ctx.db.get('files', args.fileId);
     if (!file) throw new Error('File not found');
     if (file.projectId !== args.projectId) throw new Error('Unauthorized');

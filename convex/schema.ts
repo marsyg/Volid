@@ -37,6 +37,52 @@ export default defineSchema({
   })
       .index("by_project", ['projectId'])
       .index("by_parent", ['parentId'])
-      .index("by_project_parent", ['projectId', 'parentId']),
+        .index("by_project_parent", ['projectId', 'parentId']),
   
+  agentMessages: defineTable({
+    userId: v.string(),
+    projectId: v.id('projects'),
+    role: v.union(
+      v.literal('user'),
+      v.literal('assistant'),
+      v.literal('tool'),
+      v.literal('system'),
+    ),
+    content: v.string(),
+    runId: v.optional(v.string()),
+    createdAt: v.number(),
+  })
+    .index('by_project_user_created', ['projectId', 'userId', 'createdAt'])
+    .index('by_run', ['runId']),
+
+  
+  agentMemory: defineTable({
+    userId: v.string(),
+    projectId: v.id('projects'),
+    summary: v.string(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index('by_project_user', ['projectId', 'userId']),
+
+
+  agentRuns: defineTable({
+    userId: v.string(),
+    projectId: v.id('projects'),
+    runId: v.string(),
+    status: v.union(
+      v.literal('pending'),
+      v.literal('running'),
+      v.literal('completed'),
+      v.literal('failed'),
+      ),
+    prompt: v.string(),
+    result: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+    error: v.optional(v.string()),
+  })
+    .index('by_project_user', ['projectId', 'userId'])
+    .index('by_run', ['runId'])
+    .index('by_status', ['status'])
+    .index('by_project_created', ['projectId', 'createdAt']),
 });

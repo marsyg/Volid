@@ -36,10 +36,6 @@ type baseProps = {
   fileId?: Id<'files'>;
   onChange: (value: string) => void;
 };
-type Option = {
-  value: string;
-  label: string;
-};
 type ContextMenuProps = {
   value: string;
   onChange: (value: string) => void;

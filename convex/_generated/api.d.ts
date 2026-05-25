@@ -8,6 +8,8 @@
  * @module
  */
 
+import type * as agentMemory from "../agentMemory.js";
+import type * as agentRun from "../agentRun.js";
 import type * as auth from "../auth.js";
 import type * as files from "../files.js";
 import type * as projects from "../projects.js";
@@ -19,6 +21,8 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  agentMemory: typeof agentMemory;
+  agentRun: typeof agentRun;
   auth: typeof auth;
   files: typeof files;
   projects: typeof projects;
