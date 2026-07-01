@@ -53,7 +53,7 @@ export const getById = query({
   },
 
   handler: async (ctx, args) => {
-    const project = await ctx.db.get('projects', args.id);
+    const project = await ctx.db.get(args.id);
     const identity = await verifyAuth(ctx);
 
     if (!identity) return null;
@@ -76,7 +76,7 @@ export const rename = mutation({
     const identity = await verifyAuth(ctx);
 
     if (!identity) return null;
-    const project = await ctx.db.get('projects', args.id);
+    const project = await ctx.db.get(args.id);
     if (!project) {
       return null;
     }

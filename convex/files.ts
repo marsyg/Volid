@@ -41,7 +41,7 @@ export const getFile = query({
     const identity = await verifyAuth(ctx);
     if (!identity) throw new Error('Unauthorized');
     await assertProjectOwner(ctx, args.projectId, identity.subject);
-    const file = await ctx.db.get('files', args.fileId);
+    const file = await ctx.db.get(args.fileId);
     if (!file) throw new Error('File not found');
     if (file.projectId !== args.projectId) throw new Error('Unauthorized');
 
@@ -80,7 +80,7 @@ export const createFiles = mutation({
       type: 'file',
       updatedAt: Date.now(),
     });
-    await ctx.db.patch('projects', args.projectId, { updatedAt: Date.now() });
+    await ctx.db.patch(args.projectId, { updatedAt: Date.now() });
     return projectID;
   },
 });
@@ -123,7 +123,7 @@ export const renameFile = mutation({
       name: args.name,
       updatedAt: Date.now(),
     });
-    await ctx.db.patch('projects', file.projectId, { updatedAt: Date.now() });
+    await ctx.db.patch(file.projectId, { updatedAt: Date.now() });
     return await ctx.db.get(args.fileId);
   },
 });
@@ -135,7 +135,7 @@ export const getFolderContents = query({
   },
   handler: async (ctx, args) => {
     const identity = await verifyAuth(ctx);
-    const project = await ctx.db.get('projects', args.projectId);
+    const project = await ctx.db.get(args.projectId);
 
     if (!project) throw new Error('Project not found');
     if (!identity) throw new Error('Unauthorized');
@@ -169,7 +169,7 @@ export const deleteFile = mutation({
     const file = await ctx.db.get(args.fileId);
     if (!file) throw new Error('File not found');
 
-    const project = await ctx.db.get('projects', file.projectId);
+    const project = await ctx.db.get(file.projectId);
     if (!project) throw new Error('Project not found');
     if (project.ownerId !== identity.subject) throw new Error('Unauthorized');
 
@@ -198,7 +198,7 @@ export const deleteFile = mutation({
     };
 
     await deleteRec(args.fileId);
-    await ctx.db.patch('projects', file.projectId, { updatedAt: Date.now() });
+    await ctx.db.patch(file.projectId, { updatedAt: Date.now() });
     return files;
   },
 });
@@ -216,7 +216,7 @@ export const updateFile = mutation({
     const file = await ctx.db.get(args.fileId);
     if (!file) throw new Error('File not found');
 
-    const project = await ctx.db.get('projects', file.projectId);
+    const project = await ctx.db.get(file.projectId);
     if (!project) throw new Error('Project not found');
 
     if (project.ownerId !== identity.subject) throw new Error('Unauthorized');
@@ -247,7 +247,7 @@ export const createFile = mutation({
 
     if (!identity) throw new Error('Unauthorized');
 
-    const project = await ctx.db.get('projects', args.projectId);
+    const project = await ctx.db.get(args.projectId);
     if (!project) throw new Error('Project not found');
 
     if (project.ownerId !== identity.subject) throw new Error('Unauthorized');
@@ -287,7 +287,7 @@ export const createFolder = mutation({
 
     if (!identity) throw new Error('Unauthorized');
 
-    const project = await ctx.db.get('projects', args.projectId);
+    const project = await ctx.db.get(args.projectId);
     if (!project) throw new Error('Project not found');
 
     if (project.ownerId !== identity.subject) throw new Error('Unauthorized');

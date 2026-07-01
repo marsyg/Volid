@@ -82,6 +82,7 @@ export default defineSchema({
     error: v.optional(v.string()),
   })
     .index('by_project_user', ['projectId', 'userId'])
+    .index('by_project_user_created', ['projectId', 'userId', 'createdAt'])
     .index('by_run', ['runId'])
     .index('by_status', ['status'])
     .index('by_project_created', ['projectId', 'createdAt']),

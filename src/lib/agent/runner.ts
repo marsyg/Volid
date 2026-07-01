@@ -49,7 +49,8 @@ export async function runAgent({
       await emit({ type: 'done', text: result.text, turns: turn });
       return result.text;
     }
-    messages.push({ role: 'assistant' as const, content: result.text });
+
+    messages.push(...result.response.messages);
     const toolResultParts = await executeTools(result.toolCalls, allowedTools, ctx, emit);
     messages.push({
       role: 'tool',

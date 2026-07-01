@@ -1,6 +1,7 @@
 import { v } from 'convex/values';
 import type { Id } from './_generated/dataModel';
 import { mutation, query, type MutationCtx, type QueryCtx } from './_generated/server';
+import { verifyAuth } from './auth';
 
 const assertProjectOwner = async (
   ctx: QueryCtx | MutationCtx,
@@ -55,16 +56,16 @@ export const markAgentRunAsComplete = mutation({
 export const markAgentRunAsFailed = mutation({
   args: {
     runId: v.id('agentRuns'),               
-    result: v.string(),
+    error: v.string(),
     projectId: v.id('projects'),
     userId: v.string(),
   },
   handler: async (ctx, args) => {
     await assertProjectOwner(ctx, args.projectId, args.userId);
-    const { runId, result } = args;
+    const { runId, error } = args;
     await ctx.db.patch(runId, {
       status: 'failed',
-      result,
+      error,
       updatedAt: Date.now(),
       });     
   },
@@ -111,6 +112,25 @@ export const getRunAgentById = query({
   },
 });
 
+export const getRunForCurrentUser = query({
+  args: {
+    runId: v.id('agentRuns'),
+    projectId: v.id('projects'),
+  },
+  handler: async (ctx, args) => {
+    const identity = await verifyAuth(ctx);
+    await assertProjectOwner(ctx, args.projectId, identity.subject);
+
+    const run = await ctx.db.get(args.runId);
+    if (!run) return null;
+    if (run.projectId !== args.projectId || run.userId !== identity.subject) {
+      throw new Error('Unauthorized');
+    }
+
+    return run;
+  },
+});
+
 export const getRecentAgentRuns = query({
   args: {
     projectId: v.id('projects'),
@@ -123,5 +143,24 @@ export const getRecentAgentRuns = query({
       .order("desc")
       .take(20)
       
+  },
+});
+
+export const getRecentAgentRunsForCurrentUser = query({
+  args: {
+    projectId: v.id('projects'),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await verifyAuth(ctx);
+    await assertProjectOwner(ctx, args.projectId, identity.subject);
+
+    return await ctx.db
+      .query('agentRuns')
+      .withIndex('by_project_user_created', (q) =>
+        q.eq('projectId', args.projectId).eq('userId', identity.subject),
+      )
+      .order('desc')
+      .take(args.limit ?? 20);
   },
 });

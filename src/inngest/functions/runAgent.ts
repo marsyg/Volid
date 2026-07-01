@@ -1,4 +1,4 @@
-import { createOpenAI } from '@ai-sdk/openai';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 import { generateText, type ModelMessage } from 'ai';
 import { ConvexHttpClient } from 'convex/browser';
 
@@ -8,10 +8,7 @@ import { api } from '../../../convex/_generated/api';
 import type { Id } from '../../../convex/_generated/dataModel';
 import { inngest } from '../client';
 
-const openrouter = createOpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY,
-});
+
 
 const system = `
 You are Volid's coding agent. Use tools to read/write files from Convex.
@@ -31,96 +28,110 @@ const toModelMessage = (message: {
 
 export const runAgentFunction = inngest.createFunction(
   { id: 'run-agent', triggers: [{ event: 'agent/run.requested' }] },
-  async ({ event, step }) => {
+    async ({ event, step }) => {     
+    const openrouter = createOpenRouter({
+        baseURL: 'https://openrouter.ai/api/v1',
+          apiKey: process.env.OPENROUTER_API_KEY,
+        });
     const { runId, prompt, projectId, userId, enabledTools } = event.data;
     const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
-    await step.run('save-user-message', async () => {
-      await convex.mutation(api.agentMemory.addMessage, {
-        userId,
-        projectId,
-        role: 'user',
-        content: prompt,
+    await step.run('mark-agent-run-running', async () => {
+      await convex.mutation(api.agentRun.markAgentAsRunning, {
         runId,
-      });
-    });
-
-    const memory = await step.run('load-project-memory', async () => {
-      return await convex.query(api.agentMemory.getProjectMemory, {
-        userId,
         projectId,
-      });
-    });
-
-    const recentMessages = await step.run('load-recent-messages', async () => {
-      return await convex.query(api.agentMemory.getRecentMessages, {
         userId,
-        projectId,
-        limit: 20,
       });
     });
 
-    const result = await step.run('run-agent', async () => {
-      const messages: ModelMessage[] = [
-        { role: 'system', content: system },
-        {
-          role: 'system',
-          content: `Project memory:\n${memory?.summary ?? 'No durable project memory yet.'}`,
-        },
-        ...recentMessages
-          .filter(
-            (
-              message
-            ): message is typeof message & {
-              role: 'user' | 'assistant' | 'system';
-            } => message.role !== 'tool'
-          )
-          .map(toModelMessage),
-      ];
-
-      return await runAgent({
-        model: openrouter('openai/gpt-oss-120b'),
-        messages,
-        ctx: {
+    try {
+      await step.run('save-user-message', async () => {
+        await convex.mutation(api.agentMemory.addMessage, {
           userId,
-          projectId: projectId as Id<'projects'>,
-          convex,
-        } satisfies ToolContext,
-        enabledTools,
-        config: {
-          onEvent: async (agentEvent) => {
-            if (
-              agentEvent.type === 'tool_start' ||
-              agentEvent.type === 'tool_end' ||
-              agentEvent.type === 'tool_error'
-            ) {
-              await convex.mutation(api.agentMemory.addMessage, {
-                userId,
-                projectId,
-                role: 'tool',
-                content: JSON.stringify(agentEvent),
-                runId,
-              });
-            }
+          projectId,
+          role: 'user',
+          content: prompt,
+          runId,
+        });
+      });
+
+      const memory = await step.run('load-project-memory', async () => {
+        return await convex.query(api.agentMemory.getProjectMemory, {
+          userId,
+          projectId,
+        });
+      });
+
+      const recentMessages = await step.run('load-recent-messages', async () => {
+        return await convex.query(api.agentMemory.getRecentMessages, {
+          userId,
+          projectId,
+          limit: 20,
+        });
+      });
+
+        const result = await step.run('run-agent', async () => {
+           console.log('OPENROUTER key at step time:', process.env.OPENROUTER_API_KEY); // add this
+        const messages: ModelMessage[] = [
+          { role: 'system', content: system },
+          {
+            role: 'system',
+            content: `Project memory:\n${memory?.summary ?? 'No durable project memory yet.'}`,
           },
-        },
-      });
-    });
+          ...recentMessages
+            .filter(
+              (
+                message
+              ): message is typeof message & {
+                role: 'user' | 'assistant' | 'system';
+              } => message.role !== 'tool'
+            )
+            .map(toModelMessage),
+        ];
 
-    await step.run('save-assistant-message', async () => {
-      await convex.mutation(api.agentMemory.addMessage, {
-        userId,
-        projectId,
-        role: 'assistant',
-        content: result,
-        runId,
+        return await runAgent({
+          model: openrouter('openai/gpt-oss-120b'),
+          messages,
+          ctx: {
+            userId,
+            projectId: projectId as Id<'projects'>,
+            convex,
+          } satisfies ToolContext,
+          enabledTools,
+          config: {
+            onEvent: async (agentEvent) => {
+              if (
+                agentEvent.type === 'tool_start' ||
+                agentEvent.type === 'tool_end' ||
+                agentEvent.type === 'tool_error'
+              ) {
+                await convex.mutation(api.agentMemory.addMessage, {
+                  userId,
+                  projectId,
+                  role: 'tool',
+                  content: JSON.stringify(agentEvent),
+                  runId,
+                });
+              }
+            },
+          },
+        });
       });
-    });
 
-    await step.run('update-project-memory', async () => {
-      const summaryResult = await generateText({
-        model: openrouter('openai/gpt-oss-120b'),
-        prompt: `
+      await step.run('save-assistant-message', async () => {
+        await convex.mutation(api.agentMemory.addMessage, {
+          userId,
+          projectId,
+          role: 'assistant',
+          content: result,
+          runId,
+        });
+      });
+
+      await step.run('update-project-memory', async () => {
+        const summaryResult = await generateText({
+          model: openrouter('openai/gpt-oss-120b'),
+          prompt: `
 Update the durable memory for this coding agent project.
 
 Keep only stable facts that will help future agent runs: architecture decisions, user preferences, important project context, unresolved tasks, and constraints.
@@ -129,7 +140,7 @@ Keep it concise and structured.
 
 Previous memory:
 ${memory?.summary ?? 'No previous memory.'}
-
+ 
 Latest user request:
 ${prompt}
 
@@ -138,15 +149,48 @@ ${result}
 
 Updated memory:
 `,
+        });
+
+        await convex.mutation(api.agentMemory.upsertProjectMemory, {
+          userId,
+          projectId,
+          summary: summaryResult.text,
+        });
       });
 
-      await convex.mutation(api.agentMemory.upsertProjectMemory, {
-        userId,
-        projectId,
-        summary: summaryResult.text,
+      await step.run('mark-agent-run-completed', async () => {
+        await convex.mutation(api.agentRun.markAgentRunAsComplete, {
+          runId,
+          projectId,
+          userId,
+          result,
+        });
       });
-    });
 
-    return result;
+      return result;
+    } catch (err) {
+      const error = err instanceof Error ? err.message : String(err);
+
+      await step.run('mark-agent-run-failed', async () => {
+        await convex.mutation(api.agentRun.markAgentRunAsFailed, {
+          runId,
+          projectId,
+          userId,
+          error,
+        });
+      });
+
+      await step.run('save-agent-error-message', async () => {
+        await convex.mutation(api.agentMemory.addMessage, {
+          userId,
+          projectId,
+          role: 'system',
+          content: `Agent run failed: ${error}`,
+          runId,
+        });
+      });
+
+      throw err;
+    }
   }
 );

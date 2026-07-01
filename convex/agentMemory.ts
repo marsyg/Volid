@@ -1,6 +1,7 @@
 import { v } from 'convex/values';
 import type { Id } from './_generated/dataModel';
 import { mutation, query, type MutationCtx, type QueryCtx } from './_generated/server';
+import { verifyAuth } from './auth';
 
 const assertProjectOwner = async (
   ctx: QueryCtx | MutationCtx,
@@ -55,6 +56,27 @@ export const getRecentMessages = query({
       )
       .order('desc')
       .take(args.limit ?? 20);
+
+    return messages.reverse();
+  },
+});
+
+export const getRecentMessagesForCurrentUser = query({
+  args: {
+    projectId: v.id('projects'),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await verifyAuth(ctx);
+    await assertProjectOwner(ctx, args.projectId, identity.subject);
+
+    const messages = await ctx.db
+      .query('agentMessages')
+      .withIndex('by_project_user_created', (q) =>
+        q.eq('projectId', args.projectId).eq('userId', identity.subject),
+      )
+      .order('desc')
+      .take(args.limit ?? 50);
 
     return messages.reverse();
   },
