@@ -9,7 +9,8 @@ import {
   ContextMenuShortcut,
   ContextMenuTrigger,
 } from '../../../../components/ui/context-menu';
-import { getItemPadding } from './constant';
+import { FILE_EXPLORER_KEY_BINDINGS, getItemPadding } from './constant';
+import { isKeyBindingMatch } from '@/types/keybindings';
 
 export const TreeItemWrapper = ({
   item,
@@ -42,17 +43,18 @@ export const TreeItemWrapper = ({
           onClick={onClick}
           onDoubleClick={onDoubleClick}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (isKeyBindingMatch(e, FILE_EXPLORER_KEY_BINDINGS.rename)) {
               e.preventDefault();
               onRename?.();
-            }
-            if (e.key === 'f') {
+            } else if (isKeyBindingMatch(e, FILE_EXPLORER_KEY_BINDINGS.createFile)) {
               e.preventDefault();
               onCreateFile?.();
-            }
-            if (e.key === 'd') {
+            } else if (isKeyBindingMatch(e, FILE_EXPLORER_KEY_BINDINGS.createFolder)) {
               e.preventDefault();
               onCreateFolder?.();
+            } else if (isKeyBindingMatch(e, FILE_EXPLORER_KEY_BINDINGS.delete)) {
+              e.preventDefault();
+              onDelete?.();
             }
           }}
           style={{ paddingLeft: getItemPadding(level, item.type === 'file') }}

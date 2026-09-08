@@ -19,3 +19,5 @@ export type ContextOption =
         value: ContextSelection;
       }[];
     };
+
+export * from './types/keybindings';

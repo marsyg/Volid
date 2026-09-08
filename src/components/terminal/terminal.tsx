@@ -6,11 +6,11 @@ import { WebContainerProcess } from "@webcontainer/api";
 function VolidTerminal() {
   const { ref, write } = useTerminal();
   const inputWriterRef = useRef<WritableStreamDefaultWriter | null>(null);
-  const processRef = useRef<WebContainerProcess |null>
+  const processRef = useRef<WebContainerProcess | null>(null);
   useEffect(() => {
     let cancelled = false;
-    const terminal = await getContainer() ;
-    terminal.then(async (container) => {
+    
+    getContainer().then(async (container) => {
       const shellProcess = await container.spawn('jsh', {
         terminal: { cols: 80, rows: 24 },
       });
