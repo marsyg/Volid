@@ -47,6 +47,15 @@ importers:
       '@tailwindcss/oxide-linux-x64-gnu':
         specifier: ^4.2.2
         version: 4.3.0
+      '@webcontainer/api':
+        specifier: ^1.6.4
+        version: 1.6.4
+      '@wterm/dom':
+        specifier: ^0.3.2
+        version: 0.3.2
+      '@wterm/react':
+        specifier: ^0.3.2
+        version: 0.3.2(@wterm/dom@0.3.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       ai:
         specifier: ^6.0.3
         version: 6.0.177(zod@4.4.3)
@@ -2642,6 +2651,22 @@ packages:
   '@vercel/oidc@3.2.0':
     resolution: {integrity: sha512-UycprH3T6n3jH0k44NHMa7pnFHGu/N05MjojYr+Mc6I7obkoLIJujSWwin1pCvdy/eOxrI/l3uDLQsmcrOb4ug==}
     engines: {node: '>= 20'}
+
+  '@webcontainer/api@1.6.4':
+    resolution: {integrity: sha512-r9sHCXg1FcC1AMgppGwAc0vYWaQhqvg282cnsuPbJEzYnWifAdCVvg+8ngJUEHyHcomhJJp+/zuytite4ITHLw==}
+
+  '@wterm/core@0.3.2':
+    resolution: {integrity: sha512-vM50Flv3cokZ3rLp36Iq2GErlW2ekGQrHa+pX8aU746lJr5SnRZjQ+wo4u4u+0jDJubBeCOYs1KDlUuUXN6Zhg==}
+
+  '@wterm/dom@0.3.2':
+    resolution: {integrity: sha512-Nt7kGzvIeWyXlQ1Z6BGJWQWpba8X1dSQj1cSb5cTTV4YNxq4cBe/Qkz4VLwCqS6Rt9alZ/9UMjAGHHrgpdjxFg==}
+
+  '@wterm/react@0.3.2':
+    resolution: {integrity: sha512-tDZCYZ9NAtPE0Y8DoH1jaHViKLs/Qw3LYvxjNt2iD3WT81Ld226yXoPDQblxyRLoGhEmkAe378wBm3qcP2+nNA==}
+    peerDependencies:
+      '@wterm/dom': 0.3.2
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
 
   accepts@2.0.0:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}
@@ -7986,6 +8011,20 @@ snapshots:
     optional: true
 
   '@vercel/oidc@3.2.0': {}
+
+  '@webcontainer/api@1.6.4': {}
+
+  '@wterm/core@0.3.2': {}
+
+  '@wterm/dom@0.3.2':
+    dependencies:
+      '@wterm/core': 0.3.2
+
+  '@wterm/react@0.3.2(@wterm/dom@0.3.2)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+    dependencies:
+      '@wterm/dom': 0.3.2
+      react: 19.2.3
+      react-dom: 19.2.3(react@19.2.3)
 
   accepts@2.0.0:
     dependencies:
