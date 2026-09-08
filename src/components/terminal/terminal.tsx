@@ -1,7 +1,7 @@
 import { Terminal, useTerminal } from "@wterm/react";
 import "@wterm/react/css";
 import { getContainer } from '@/lib/webcontainer';
-import { useRef, useEffect } from "react"; 
+import { useRef, useEffect } from "react";
 import { WebContainerProcess } from "@webcontainer/api";
 function VolidTerminal() {
   const { ref, write } = useTerminal();
@@ -9,7 +9,7 @@ function VolidTerminal() {
   const processRef = useRef<WebContainerProcess | null>(null);
   useEffect(() => {
     let cancelled = false;
-    
+
     getContainer().then(async (container) => {
       const shellProcess = await container.spawn('jsh', {
         terminal: { cols: 80, rows: 24 },
@@ -19,7 +19,7 @@ function VolidTerminal() {
       inputWriterRef.current = shellProcess.input.getWriter();
 
       shellProcess.output.pipeTo(new WritableStream({
-        write(data) { write(data); }, 
+        write(data) { write(data); },
       }));
     });
 
@@ -30,8 +30,9 @@ function VolidTerminal() {
     <Terminal
       ref={ref}
       onData={(data) => {
-        inputWriterRef.current?.write(data); 
+        inputWriterRef.current?.write(data);
       }}
     />
   );
 }
+export default VolidTerminal 

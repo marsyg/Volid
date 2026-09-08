@@ -23,6 +23,7 @@ export const TreeItemWrapper = ({
   onCreateFolder,
   onRename,
   onDelete,
+  onOpenTerminal,
 }: {
   item: Doc<'files'>;
   children: React.ReactNode;
@@ -34,6 +35,7 @@ export const TreeItemWrapper = ({
   onCreateFolder?: () => void;
   onRename?: () => void;
   onDelete?: () => void;
+  onOpenTerminal?: () => void;
 }) => {
   return (
     <ContextMenu>
@@ -55,6 +57,9 @@ export const TreeItemWrapper = ({
             } else if (isKeyBindingMatch(e, FILE_EXPLORER_KEY_BINDINGS.delete)) {
               e.preventDefault();
               onDelete?.();
+            } else if (isKeyBindingMatch(e, FILE_EXPLORER_KEY_BINDINGS.openInTerminal)) {
+              e.preventDefault();
+              onOpenTerminal?.();
             }
           }}
           style={{ paddingLeft: getItemPadding(level, item.type === 'file') }}
@@ -95,6 +100,16 @@ export const TreeItemWrapper = ({
             </Button>
           </ContextMenuShortcut>
         </ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem className="text-sm" onClick={onOpenTerminal}>
+          Open in Integrated Terminal
+          <ContextMenuShortcut>
+            <Button variant="ghost" size="sm" className="text-sm">
+              Ctrl+`
+            </Button>
+          </ContextMenuShortcut>
+        </ContextMenuItem>
+
       </ContextMenuContent>
     </ContextMenu>
   );

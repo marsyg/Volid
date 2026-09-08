@@ -160,6 +160,7 @@ export const Tree = ({
             setDeleting(true);
             deleteFile({ fileId: file._id });
           }}
+          onOpenTerminal={() => { }}
         >
           {folderRender}
         </TreeItemWrapper>
@@ -186,12 +187,13 @@ export const Tree = ({
         level={level}
         isActive={isOpen}
         onClick={() => handleClick(projectId, file._id, false)}
-        onCreateFile={() => {}}
+        onCreateFile={() => { }}
         onDelete={() => {
           setDeleting(true);
           deleteFile({ fileId: file._id });
         }}
         onRename={() => setIsRenaming(true)}
+
       >
         <FileIcon fileName={file.name} className="w-4 h-4" />
         <span className="truncate text-sm">{file.name}</span>

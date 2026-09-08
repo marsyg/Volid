@@ -11,12 +11,15 @@ import {
   MIN_FILE_EXPLORER_WIDTH,
   MIN_SIDEBAR_WIDTH,
 } from '@/consant';
-
+import VolidTerminal from '@/components/terminal/terminal';
 import 'allotment/dist/style.css';
 import { FileExplorer } from '@/features/projects/components/fileExplorer';
 import { EditorView } from '@/features/editor/components/editor-view';
+
 export const ProjectIdView = ({ projectId }: { projectId: Id<'projects'> }) => {
   const [activeTab, setActiveTab] = useState<'code' | 'preview'>('code');
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+
   return (
     <div className="flex flex-col h-screen">
       <ViewSwitcher activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -29,18 +32,23 @@ export const ProjectIdView = ({ projectId }: { projectId: Id<'projects'> }) => {
               maxSize={MAX_SIDEBAR_WIDTH}
               preferredSize={DEFAULT_SIDEBAR_WIDTH}
             >
+              {/* You can pass onOpenTerminal here to toggle the terminal */}
               <FileExplorer projectId={projectId} />
             </Allotment.Pane>
-            <Allotment.Pane
-              minSize={MIN_SIDEBAR_WIDTH}
-              preferredSize={DEFAULT_MAIN_SIZE}
-            >
-              <TabBar
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                projectId={projectId}
-              />
-              <EditorView projectId={projectId} />
+
+            {/* Single Main Pane split vertically for Editor + Terminal */}
+            <Allotment.Pane minSize={MIN_SIDEBAR_WIDTH} preferredSize={DEFAULT_MAIN_SIZE}>
+              <Allotment vertical>
+                <Allotment.Pane>
+                  <TabBar activeTab={activeTab} setActiveTab={setActiveTab} projectId={projectId} />
+                  <EditorView projectId={projectId} />
+                </Allotment.Pane>
+                {isTerminalOpen && (
+                  <Allotment.Pane minSize={100} preferredSize={250}>
+                    <VolidTerminal />
+                  </Allotment.Pane>
+                )}
+              </Allotment>
             </Allotment.Pane>
           </Allotment>
         </div>
