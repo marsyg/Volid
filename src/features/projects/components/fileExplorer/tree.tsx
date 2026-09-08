@@ -35,7 +35,7 @@ export const Tree = ({
   const createFolder = useCreateFolder();
   const deleteFile = useDeleteFile();
   const renameFile = useRenameFile();
-
+  const setTerminal = useEditorStore((state) => state.setTerminal);
   const openFile = useEditorStore((state) => state.openFile);
   const handleClick = (projectId: Id<'projects'>, fileId: Id<'files'>, pinned: boolean) => {
     openFile(projectId, fileId, { pinned });
@@ -160,7 +160,7 @@ export const Tree = ({
             setDeleting(true);
             deleteFile({ fileId: file._id });
           }}
-          onOpenTerminal={() => { }}
+          onOpenTerminal={() => { setTerminal(true) }}
         >
           {folderRender}
         </TreeItemWrapper>
@@ -193,7 +193,7 @@ export const Tree = ({
           deleteFile({ fileId: file._id });
         }}
         onRename={() => setIsRenaming(true)}
-
+        onOpenTerminal={() => { setTerminal(true) }}
       >
         <FileIcon fileName={file.name} className="w-4 h-4" />
         <span className="truncate text-sm">{file.name}</span>

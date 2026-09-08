@@ -12,6 +12,9 @@ interface EditorStore {
   closeTab: (projectId: Id<'projects'>, fileId: Id<'files'>) => void;
   closeAll: (projectId: Id<'projects'>) => void;
   setActiveTab: (projectId: Id<'projects'>, fileId: Id<'files'> | null) => void;
+  isTerminalOpen: boolean;
+  setTerminal: (open: boolean) => void;
+  toggleTerminal: () => void;
 }
 interface TabState {
   activeTabId: Id<'files'> | null;
@@ -30,6 +33,7 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
     const tabState = get().tabs.get(project);
     return tabState ?? defaultTabState;
   },
+  isTerminalOpen: false,
   openFile: (
     projectId: Id<'projects'>,
     fileId: Id<'files'>,
@@ -123,5 +127,11 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
       previewTabId: pinTab ? fileId : null,
     });
     set({ tabs });
+  },
+  setTerminal: (open: boolean) => {
+    set({ isTerminalOpen: open });
+  },
+  toggleTerminal: () => {
+    set((state) => ({ isTerminalOpen: !state.isTerminalOpen }));
   },
 }));

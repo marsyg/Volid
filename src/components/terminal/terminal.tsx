@@ -27,12 +27,16 @@ function VolidTerminal() {
   }, []);
 
   return (
-    <Terminal
-      ref={ref}
-      onData={(data) => {
-        inputWriterRef.current?.write(data);
-      }}
-    />
+    <div className="h-full w-full bg-background overflow-hidden">
+      <Terminal
+        ref={ref}
+        autoResize
+        className="h-full w-full"
+        onData={(data) => {
+          inputWriterRef.current?.write(data);
+        }}
+      />
+    </div>
   );
 }
-export default VolidTerminal 
+export default VolidTerminal;

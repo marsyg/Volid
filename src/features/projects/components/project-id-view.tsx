@@ -15,10 +15,24 @@ import VolidTerminal from '@/components/terminal/terminal';
 import 'allotment/dist/style.css';
 import { FileExplorer } from '@/features/projects/components/fileExplorer';
 import { EditorView } from '@/features/editor/components/editor-view';
+import { useEditorStore } from '@/features/editor/store/useEditorStore';
+import { useEffect } from 'react';
 
 export const ProjectIdView = ({ projectId }: { projectId: Id<'projects'> }) => {
   const [activeTab, setActiveTab] = useState<'code' | 'preview'>('code');
-  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+  const isTerminalOpen = useEditorStore((state) => state.isTerminalOpen);
+  const toggleTerminal = useEditorStore((state) => state.toggleTerminal);
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '`' && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        toggleTerminal?.();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleTerminal]);
+
 
   return (
     <div className="flex flex-col h-screen">
