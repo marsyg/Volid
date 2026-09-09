@@ -100,7 +100,7 @@ const Navbar = ({ projectId }: { projectId: Id<'projects'> }) => {
               <BreadcrumbItem>
                 <BreadcrumbPage
                   onClick={() => handleRename()}
-                  className="text-sm cursor-pointer hover:text-primary font-medium max-w-40 turncate"
+                  className="text-sm cursor-pointer hover:text-primary font-medium max-w-40 truncate"
                 >
                   {project?.name ?? 'Loading...'}
                 </BreadcrumbPage>
