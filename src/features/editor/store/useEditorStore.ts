@@ -19,6 +19,10 @@ interface EditorStore {
   setWebContainerMounted: (mounted: boolean) => void;
   previewUrl: string | null;
   setPreviewUrl: (url: string | null) => void;
+  isQuickOpenBoxOpen: boolean;
+  toggleQuickOpenBox: () => void;
+  setIsQuickOpenBoxOpen: (open: boolean) => void;
+
 }
 interface TabState {
   activeTabId: Id<'files'> | null;
@@ -145,5 +149,12 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
   previewUrl: null,
   setPreviewUrl: (url: string | null) => {
     set({ previewUrl: url });
+  },
+  isQuickOpenBoxOpen: false,
+  toggleQuickOpenBox: () => {
+    set((state) => ({ isQuickOpenBoxOpen: !state.isQuickOpenBoxOpen }));
+  },
+  setIsQuickOpenBoxOpen: (open: boolean) => {
+    set({ isQuickOpenBoxOpen: open });
   },
 }));

@@ -20,23 +20,32 @@ import { useEditorStore } from '@/features/editor/store/useEditorStore';
 import { PreviewView } from './preview-view';
 import { TerminalSquareIcon, XIcon } from 'lucide-react';
 import { useWebContainer } from '../hooks/use-webContianer';
+import { GlobalSearchDialogBox } from './global-Search-dialog-box';
 
 export const ProjectIdView = ({ projectId }: { projectId: Id<'projects'> }) => {
   const [activeTab, setActiveTab] = useState<'code' | 'preview'>('code');
   const isTerminalOpen = useEditorStore((state) => state.isTerminalOpen);
   const toggleTerminal = useEditorStore((state) => state.toggleTerminal);
   const setTerminal = useEditorStore((state) => state.setTerminal);
-  useWebContainer(projectId)
+  const toggleQuickOpenBox = useEditorStore((state) => state.toggleQuickOpenBox);
+  useWebContainer(projectId);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === '`' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         toggleTerminal?.();
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        toggleQuickOpenBox?.();
+      } else if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        toggleQuickOpenBox?.();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toggleTerminal]);
+  }, [toggleTerminal, toggleQuickOpenBox]);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-background">
@@ -105,6 +114,8 @@ export const ProjectIdView = ({ projectId }: { projectId: Id<'projects'> }) => {
       ) : (
         <PreviewView />
       )}
+
+      <GlobalSearchDialogBox projectId={projectId} />
     </div>
   );
 };
