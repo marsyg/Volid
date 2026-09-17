@@ -7,7 +7,10 @@ import type { Id } from '../../../../convex/_generated/dataModel';
 import { useFile, useUpdateFile } from '../../projects/hooks/use-file';
 import { useEditorStore } from '../store/useEditorStore';
 import { CodeEditor } from './code-editor';
-
+import { getContainer } from '@/lib/webcontainer';
+import { getFilePath } from '@/lib/buildTree';
+import { useFiles } from '../../projects/hooks/use-file';
+import { getPath } from 'recharts/types/shape/Curve';
 const DEBOUNCE_MS = 1500;
 
 export const EditorView = ({ projectId }: { projectId: Id<'projects'> }) => {
@@ -20,6 +23,9 @@ export const EditorView = ({ projectId }: { projectId: Id<'projects'> }) => {
 
   const isActiveFileBinary = activeFile && activeFile.storageID;
   const isActiveFileText = activeFile && !activeFile.storageID;
+
+  const allFiles = useFiles(projectId)
+
 
   // Cleanup pending debounced updates
   useEffect(() => {
@@ -52,6 +58,16 @@ export const EditorView = ({ projectId }: { projectId: Id<'projects'> }) => {
             fileName={activeFile.name}
             intailValue={activeFile.content}
             onChange={(content: string) => {
+              if (allFiles && activeFile) {
+                const path = getFilePath(allFiles, activeFile._id)
+                if (path) {
+                  getContainer().then((container) => {
+                    container.fs.writeFile(path, content);
+                  });
+                }
+
+              }
+
               if (timeoutRef.current) {
                 clearTimeout(timeoutRef.current);
               }

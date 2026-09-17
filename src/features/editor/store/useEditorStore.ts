@@ -15,6 +15,10 @@ interface EditorStore {
   isTerminalOpen: boolean;
   setTerminal: (open: boolean) => void;
   toggleTerminal: () => void;
+  webcontainerMounted: boolean;
+  setWebContainerMounted: (mounted: boolean) => void;
+  previewUrl: string | null;
+  setPreviewUrl: (url: string | null) => void;
 }
 interface TabState {
   activeTabId: Id<'files'> | null;
@@ -133,5 +137,13 @@ export const useEditorStore = create<EditorStore>((set, get) => ({
   },
   toggleTerminal: () => {
     set((state) => ({ isTerminalOpen: !state.isTerminalOpen }));
+  },
+  webcontainerMounted: false,
+  setWebContainerMounted: (mounted: boolean) => {
+    set({ webcontainerMounted: mounted });
+  },
+  previewUrl: null,
+  setPreviewUrl: (url: string | null) => {
+    set({ previewUrl: url });
   },
 }));

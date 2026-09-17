@@ -59,7 +59,7 @@ export const createFiles = mutation({
   handler: async (ctx, args) => {
     const identity = await verifyAuth(ctx);
     if (!identity) throw new Error('Unauthorized');
-
+    await assertProjectOwner(ctx, args.projectId, identity.subject);
     const files = await ctx.db
       .query('files')
       .withIndex('by_project_parent', (q) =>
@@ -103,7 +103,7 @@ export const renameFile = mutation({
 
     if (!project) throw new Error('project not found');
 
-    // if (file.projectId !== identity.subject) throw new Error('Unauthorized');
+    await assertProjectOwner(ctx, args.projectId, identity.subject);
 
     const files = await ctx.db
       .query('files')

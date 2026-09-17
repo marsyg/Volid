@@ -1,7 +1,7 @@
 
 import { NextResponse } from 'next/server';
 import { openrouter } from '@/lib/openRouter';
-
+import { auth } from '@clerk/nextjs/server';
 const prompt = `
 You are an advanced AI coding assistant specialized in inline autocompletion.
 
@@ -32,6 +32,15 @@ function getErrorMessage(error: unknown) {
 }
 
 export async function POST(req: Request) {
+
+  const user = await auth.protect()
+  if (!user) {
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 },
+    );
+  }
+
   try {
     if (!process.env.OPENROUTER_API_KEY) {
       return NextResponse.json(
@@ -52,7 +61,7 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
-    
+
     const fullPrompt = prompt
       .replace('<language>', languageId)
       .replace('<Before>', code.beforeCursor ?? '')

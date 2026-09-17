@@ -1,4 +1,5 @@
 import { Maximize2, Minimize2, PinIcon, XIcon } from 'lucide-react';
+import { Fragment } from 'react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -99,12 +100,21 @@ export const TabBar = ({
         <div className="flex  bg-muted border-b items-center gap-2">
           <Breadcrumb className="m-1">
             <BreadcrumbList>
-              {path.map((name, index) => (
-                <BreadcrumbItem key={index}>
-                  <BreadcrumbLink href="#">{name}</BreadcrumbLink>
-                  {index < path.length - 1 && <BreadcrumbSeparator />}
-                </BreadcrumbItem>
-              ))}
+              {path.map((name, index) => {
+                const isLast = index === path.length - 1;
+                return (
+                  <Fragment key={index}>
+                    <BreadcrumbItem>
+                      {isLast ? (
+                        <BreadcrumbPage>{name}</BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink href="#">{name}</BreadcrumbLink>
+                      )}
+                    </BreadcrumbItem>
+                    {!isLast && <BreadcrumbSeparator />}
+                  </Fragment>
+                );
+              })}
             </BreadcrumbList>
           </Breadcrumb>
         </div>

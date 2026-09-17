@@ -19,13 +19,14 @@ import { EditorView } from '@/features/editor/components/editor-view';
 import { useEditorStore } from '@/features/editor/store/useEditorStore';
 import { PreviewView } from './preview-view';
 import { TerminalSquareIcon, XIcon } from 'lucide-react';
+import { useWebContainer } from '../hooks/use-webContianer';
 
 export const ProjectIdView = ({ projectId }: { projectId: Id<'projects'> }) => {
   const [activeTab, setActiveTab] = useState<'code' | 'preview'>('code');
   const isTerminalOpen = useEditorStore((state) => state.isTerminalOpen);
   const toggleTerminal = useEditorStore((state) => state.toggleTerminal);
   const setTerminal = useEditorStore((state) => state.setTerminal);
-
+  useWebContainer(projectId)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === '`' && (e.ctrlKey || e.metaKey)) {

@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Id } from '../../../../convex/_generated/dataModel';
 import {
   Breadcrumb,
@@ -59,24 +59,24 @@ const Navbar = ({ projectId }: { projectId: Id<'projects'> }) => {
         <Breadcrumb>
           <BreadcrumbList className="gap-0!">
             <BreadcrumbItem>
-              <BreadcrumbLink
-                className="flex items-center gap-1.5 group/logo"
-                asChild
-                href={`/projects/${projectId}`}
-              >
-                <Button variant="ghost" className="w-fit! p-1.5! h-7!" asChild>
-                  <Link href={`/`}>
-                    <Image src="/vercel.svg" alt="" width={20} height={20} />
-                    <span
-                      className={cn(
-                        'hidden group-hover/logo:block',
-                        font.className,
-                      )}
-                    >
-                      Volid
-                    </span>
-                  </Link>
-                </Button>
+              <BreadcrumbLink asChild>
+                <Link
+                  href="/"
+                  className={cn(
+                    buttonVariants({ variant: 'ghost' }),
+                    'flex items-center gap-1.5 group/logo w-fit! p-1.5! h-7!',
+                  )}
+                >
+                  <Image src="/vercel.svg" alt="Volid" width={20} height={20} />
+                  <span
+                    className={cn(
+                      'hidden group-hover/logo:block',
+                      font.className,
+                    )}
+                  >
+                    Volid
+                  </span>
+                </Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
 

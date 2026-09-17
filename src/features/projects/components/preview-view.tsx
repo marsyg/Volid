@@ -14,9 +14,12 @@ import {
 import { useEditorStore } from '@/features/editor/store/useEditorStore';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useRef } from 'react';
 
 export const PreviewView = () => {
   const [device, setDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
+  const previewUrl = useEditorStore((state) => state.previewUrl);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [url, setUrl] = useState('http://localhost:3000');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const setTerminal = useEditorStore((state) => state.setTerminal);
@@ -121,28 +124,40 @@ export const PreviewView = () => {
             deviceWidths[device]
           )}
         >
-          <div className="size-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-4 shadow-xs">
-            <GlobeIcon className="size-6" />
-          </div>
+          {previewUrl ? (
+            <iframe
+              ref={iframeRef}
+              src={previewUrl}
+              className="w-full h-full border-0"
+              title="Preview"
+              allow="cross-origin-isolated"
+            />
+          ) : (
+            <div className='size-full flex flex-col items-center justify-center text-center p-8'>
+              <div className="size-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary mb-4 shadow-xs">
+                <GlobeIcon className="size-6" />
+              </div>
 
-          <h3 className="text-base font-semibold text-foreground">
-            Development Server Preview
-          </h3>
-          <p className="text-xs text-muted-foreground mt-1 max-w-sm">
-            Launch your development server in the integrated terminal to preview your web application in real time.
-          </p>
+              <h3 className="text-base font-semibold text-foreground">
+                Development Server Preview
+              </h3>
+              <p className="text-xs text-muted-foreground mt-1 max-w-sm">
+                Launch your development server in the integrated terminal to preview your web application in real time.
+              </p>
 
-          <div className="mt-5 flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => setTerminal(true)}
-              className="gap-2 text-xs"
-            >
-              <TerminalSquareIcon className="size-3.5" />
-              Open Terminal
-            </Button>
-          </div>
+              <div className="mt-5 flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setTerminal(true)}
+                  className="gap-2 text-xs"
+                >
+                  <TerminalSquareIcon className="size-3.5" />
+                  Open Terminal
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
